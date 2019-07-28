@@ -1,0 +1,42 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+    <!--调用组件前若配置了过滤器和监听器，这两种组件，过滤器最优先，必须写在最上面-->
+    <!-- 字符过滤器写在最上面！！！和eclipse不一样-->
+
+    <filter>
+        <filter-name>characterEncoding</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+          <param-name>encoding</param-name>
+          <param-value>utf-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterEncoding</filter-name>
+        <url-pattern>*.do</url-pattern>
+    </filter-mapping>
+    <!-- 用于捕捉每次请求的requestcontext上下文并包装到requestcontextholder里去，顾名思义只有配置这个
+    监听器才能使用requestcontextholder，SpringBoot默认监听了改时间！！-->
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>springMVC</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- mvc组件控制器必须在初始化参数加载MVC配置文件，因为配置文件中的内容是扫描指定包下带Controller注解
+        的类的bean注册到容器中去，并表示controller类中设置有requestmapping注解的内容均为servlet-->
+        <init-param>
+          <param-name>contextConfigLocation</param-name>
+          <param-value>classpath:applicationContext_website.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springMVC</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+</web-app>
